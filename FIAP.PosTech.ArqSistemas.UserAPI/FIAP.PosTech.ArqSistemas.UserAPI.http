@@ -1,0 +1,6 @@
+@FIAP.PosTech.ArqSistemas.UserAPI_HostAddress = http://localhost:5172
+
+GET {{FIAP.PosTech.ArqSistemas.UserAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
