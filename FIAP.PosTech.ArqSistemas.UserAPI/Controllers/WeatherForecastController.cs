@@ -1,3 +1,4 @@
+using FIAP.PosTech.ArqSistemas.UserAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers

@@ -1,4 +1,4 @@
-namespace FIAP.PosTech.ArqSistemas.UserAPI
+namespace FIAP.PosTech.ArqSistemas.UserAPI.Model
 {
     public class WeatherForecast
     {
