@@ -1,22 +1,22 @@
-// CRUD Testing Guide for Usuario API
-// Base URL: https://localhost:7011/api/usuario (adjust port as needed)
-// All requests include X-Correlation-Id header (auto-generated if not provided)
+// Guia de Testes CRUD para API de Usuário
+// URL Base: https://localhost:7011/api/usuario (ajuste a porta conforme necessário)
+// Todas as requisições incluem o header X-Correlation-Id (gerado automaticamente se não fornecido)
 
 ###
-// 1. GET ALL USUARIOS
+// 1. OBTER TODOS OS USUÁRIOS
 GET https://localhost:7011/api/usuario
 X-Correlation-Id: test-001
 
 ###
-// 2. GET USUARIO BY ID (should find one of the 5 seed records)
+// 2. OBTER USUÁRIO POR ID (deve encontrar um dos 5 registros iniciais)
 GET https://localhost:7011/api/usuario/1
 X-Correlation-Id: test-002
 
 ###
-// 3. CREATE NEW USUARIO
-// Requirements: Nome, Email, Senha (all required)
-// Email format: valid email format
-// Senha: minimum 8 characters, at least 1 letter, 1 digit, 1 special char [!@#$%^&*\-_=+]
+// 3. CRIAR NOVO USUÁRIO
+// Requisitos: Nome, Email, Senha (todos obrigatórios)
+// Formato de Email: email válido
+// Senha: mínimo de 8 caracteres, pelo menos 1 letra, 1 dígito, 1 caractere especial [!@#$%^&*\-_=+]
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 X-Correlation-Id: test-003
@@ -28,9 +28,9 @@ X-Correlation-Id: test-003
 }
 
 ###
-// 4. UPDATE USUARIO
-// Requirements: Id in URL (required), all fields in body (nome, email, senha)
-// Same validation rules apply
+// 4. ATUALIZAR USUÁRIO
+// Requisitos: Id na URL (obrigatório), todos os campos no corpo (nome, email, senha)
+// As mesmas regras de validação se aplicam
 PUT https://localhost:7011/api/usuario/1
 Content-Type: application/json
 X-Correlation-Id: test-004
@@ -42,15 +42,15 @@ X-Correlation-Id: test-004
 }
 
 ###
-// 5. DELETE USUARIO
-// Requirements: Only Id needed (in URL)
+// 5. EXCLUIR USUÁRIO
+// Requisitos: Apenas Id necessário (na URL)
 DELETE https://localhost:7011/api/usuario/6
 X-Correlation-Id: test-005
 
 ###
-// Test cases for validation errors:
+// Casos de teste para erros de validação:
 
-// ERROR: Invalid email format
+// ERRO: Formato de email inválido
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 
@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ###
-// ERROR: Weak password (less than 8 characters)
+// ERRO: Senha fraca (menos de 8 caracteres)
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 
@@ -72,7 +72,7 @@ Content-Type: application/json
 }
 
 ###
-// ERROR: Password without special character
+// ERRO: Senha sem caractere especial
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 
@@ -83,7 +83,7 @@ Content-Type: application/json
 }
 
 ###
-// ERROR: Duplicate email
+// ERRO: Email duplicado
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 
@@ -94,7 +94,7 @@ Content-Type: application/json
 }
 
 ###
-// ERROR: Missing required field (Email)
+// ERRO: Campo obrigatório ausente (Email)
 POST https://localhost:7011/api/usuario
 Content-Type: application/json
 
@@ -104,7 +104,7 @@ Content-Type: application/json
 }
 
 ###
-// Seed data for reference:
+// Dados iniciais para referência:
 // 1. Id: 1, Nome: "João Silva", Email: "joao@example.com", Senha: "SenhaSegura@123"
 // 2. Id: 2, Nome: "Maria Santos", Email: "maria@example.com", Senha: "OutraSenha#456"
 // 3. Id: 3, Nome: "Pedro Oliveira", Email: "pedro@example.com", Senha: "MaisSenha!789"
