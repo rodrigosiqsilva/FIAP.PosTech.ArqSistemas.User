@@ -1,4 +1,4 @@
-﻿namespace FIAP.PosTech.ArqSistemas.UserAPI.Model
+﻿namespace FIAP.PosTech.ArqSistemas.UserAPI.Models
 {
     public class Usuario
     {

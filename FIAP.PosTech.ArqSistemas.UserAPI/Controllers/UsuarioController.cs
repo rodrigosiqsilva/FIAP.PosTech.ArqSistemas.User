@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FIAP.PosTech.ArqSistemas.UserAPI.Model;
 using FIAP.PosTech.ArqSistemas.UserAPI.Services;
 using FIAP.PosTech.ArqSistemas.UserAPI.Models;
 

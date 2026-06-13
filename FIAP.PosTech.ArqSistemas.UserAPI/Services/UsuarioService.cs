@@ -1,4 +1,4 @@
-using FIAP.PosTech.ArqSistemas.UserAPI.Model;
+using FIAP.PosTech.ArqSistemas.UserAPI.Models;
 using FIAP.PosTech.ArqSistemas.UserAPI.Validators;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
