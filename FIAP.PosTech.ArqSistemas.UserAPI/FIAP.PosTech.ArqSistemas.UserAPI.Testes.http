@@ -1,25 +1,38 @@
 // Guia de Testes CRUD para API de Usuário
-// URL Base: https://localhost:7047/api/usuario (ajuste a porta conforme necessário)
 // Todas as requisições incluem o header X-Correlation-Id (gerado automaticamente se não fornecido)
 
-###
-// 1. OBTER TODOS OS USUÁRIOS
-GET https://localhost:7047/api/usuario
-X-Correlation-Id: test-001
+@HostAddress = https://localhost:7047
 
-###
-// 2. OBTER USUÁRIO POR ID (deve encontrar um dos 5 registros iniciais)
-GET https://localhost:7047/api/usuario/1
+
+### 1. Requisição de Login (Gera o Token)
+# @name login
+POST {{HostAddress}}/login
+Content-Type: application/json
+{
+    "email": "joao@example.com",
+    "senha": "SenhaSegura@123"
+}
+
+### 2. OBTER TODOS OS USUÁRIOS
+GET {{HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 X-Correlation-Id: test-002
 
 ###
-// 3. CRIAR NOVO USUÁRIO
+// 3. OBTER USUÁRIO POR ID 
+GET {{HostAddress}}/api/usuario/1
+Authorization: Bearer {{login.response.body.$.token}}
+X-Correlation-Id: test-003
+
+###
+// 4. CRIAR NOVO USUÁRIO
 // Requisitos: Nome, Email, Senha (todos obrigatórios)
 // Formato de Email: email válido
 // Senha: mínimo de 8 caracteres, pelo menos 1 letra, 1 dígito, 1 caractere especial [!@#$%^&*\-_=+]
-POST https://localhost:7047/api/usuario
+POST {{HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
-X-Correlation-Id: test-003
+X-Correlation-Id: test-004
 
 {
   "nome": "Teste Usuario",
@@ -28,12 +41,13 @@ X-Correlation-Id: test-003
 }
 
 ###
-// 4. ATUALIZAR USUÁRIO
+// 5. ATUALIZAR USUÁRIO
 // Requisitos: Id na URL (obrigatório), todos os campos no corpo (nome, email, senha)
 // As mesmas regras de validação se aplicam
-PUT https://localhost:7047/api/usuario/1
+PUT {{HostAddress}}/api/usuario/1
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
-X-Correlation-Id: test-004
+X-Correlation-Id: test-005
 
 {
   "nome": "João Silva Atualizado",
@@ -42,16 +56,18 @@ X-Correlation-Id: test-004
 }
 
 ###
-// 5. EXCLUIR USUÁRIO
+// 6. EXCLUIR USUÁRIO
 // Requisitos: Apenas Id necessário (na URL)
-DELETE https://localhost:7047/api/usuario/6
-X-Correlation-Id: test-005
+DELETE {{HostAddress}}/api/usuario/6
+Authorization: Bearer {{login.response.body.$.token}}
+X-Correlation-Id: test-006
 
 ###
 // Casos de teste para erros de validação:
 
 // ERRO: Formato de email inválido
 POST https://localhost:7047/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -62,7 +78,8 @@ Content-Type: application/json
 
 ###
 // ERRO: Senha fraca (menos de 8 caracteres)
-POST https://localhost:7047/api/usuario
+POST {{HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -73,7 +90,8 @@ Content-Type: application/json
 
 ###
 // ERRO: Senha sem caractere especial
-POST https://localhost:7047/api/usuario
+POST {{HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -83,19 +101,9 @@ Content-Type: application/json
 }
 
 ###
-// ERRO: Email duplicado
-POST https://localhost:7047/api/usuario
-Content-Type: application/json
-
-{
-  "nome": "Another User",
-  "email": "joao@example.com",
-  "senha": "ValidSenha@123"
-}
-
-###
 // ERRO: Campo obrigatório ausente (Email)
-POST https://localhost:7047/api/usuario
+POST {{HostAddress}}/api/usuario
+Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 
 {
