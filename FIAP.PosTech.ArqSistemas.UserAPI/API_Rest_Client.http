@@ -152,7 +152,7 @@ X-Correlation-Id: {{$guid}}
 
 ### ========== SECTION 4: Update Operations (Success Cases) ==========
 
-### UPDATE USUARIO - Valid Update
+### UPDATE USUARIO - Valid Update (all fields)
 PUT https://localhost:7011/api/usuario/1
 Content-Type: application/json
 X-Correlation-Id: {{$guid}}
@@ -163,15 +163,41 @@ X-Correlation-Id: {{$guid}}
   "senha": "NovaSenha@456"
 }
 
-### UPDATE USUARIO - Another Valid Update
+### UPDATE USUARIO - Partial Update (only nome)
 PUT https://localhost:7011/api/usuario/2
 Content-Type: application/json
 X-Correlation-Id: {{$guid}}
 
 {
-  "nome": "Maria Santos Modificada",
-  "email": "maria.novo@example.com",
-  "senha": "OutraSenha#99999"
+  "nome": "Maria Santos - Updated Name Only"
+}
+
+### UPDATE USUARIO - Partial Update (only email)
+PUT https://localhost:7011/api/usuario/3
+Content-Type: application/json
+X-Correlation-Id: {{$guid}}
+
+{
+  "email": "pedro.novo@example.com"
+}
+
+### UPDATE USUARIO - Partial Update (only senha)
+PUT https://localhost:7011/api/usuario/4
+Content-Type: application/json
+X-Correlation-Id: {{$guid}}
+
+{
+  "senha": "NovaSenh@789"
+}
+
+### UPDATE USUARIO - Partial Update (nome and email)
+PUT https://localhost:7011/api/usuario/5
+Content-Type: application/json
+X-Correlation-Id: {{$guid}}
+
+{
+  "nome": "Carlos Mendes - Updated",
+  "email": "carlos.novo@example.com"
 }
 
 ### ========== SECTION 5: Update Operations (Validation Error Cases) ==========

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FIAP.PosTech.ArqSistemas.UserAPI.Services;
 using FIAP.PosTech.ArqSistemas.UserAPI.Models;
+using FIAP.PosTech.ArqSistemas.UserAPI.DTOs;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
 {
@@ -129,20 +130,20 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         }
 
         /// <summary>
-        /// Altera um usuário existente
+        /// Altera um usuário existente (partial update)
         /// </summary>
         /// <param name="id">Id do usuário a ser alterado (obrigatório)</param>
-        /// <param name="usuario">Dados atualizados do usuário</param>
+        /// <param name="usuarioAtualizado">Dados a serem atualizados. Todos os campos são opcionais - apenas os fornecidos serão alterados.</param>
         /// <returns>Usuário alterado</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ApiResponse<Usuario>> Alterar(int id, [FromBody] Usuario usuario)
+        public ActionResult<ApiResponse<Usuario>> Alterar(int id, [FromBody] AtualizarUsuarioDto usuarioAtualizado)
         {
             try
             {
-                if (usuario == null)
+                if (usuarioAtualizado == null)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
                     errorResponse.CorrelationId = GetCorrelationId();
@@ -156,7 +157,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                     return BadRequest(errorResponse);
                 }
 
-                var (sucesso, mensagem, usuarioAlterado) = _usuarioService.Alterar(id, usuario);
+                var (sucesso, mensagem, usuarioAlterado) = _usuarioService.Alterar(id, usuarioAtualizado);
 
                 if (!sucesso)
                 {

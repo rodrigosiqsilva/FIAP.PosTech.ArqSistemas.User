@@ -1,5 +1,6 @@
 using FIAP.PosTech.ArqSistemas.UserAPI.Models;
 using FIAP.PosTech.ArqSistemas.UserAPI.Validators;
+using FIAP.PosTech.ArqSistemas.UserAPI.DTOs;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 {
@@ -102,7 +103,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
             return (true, "Usuário criado com sucesso", novoUsuario);
         }
 
-        public (bool Sucesso, string Mensagem, Usuario Usuario) Alterar(int id, Usuario usuario)
+        public (bool Sucesso, string Mensagem, Usuario Usuario) Alterar(int id, AtualizarUsuarioDto usuarioAtualizado)
         {
             var erros = new List<string>();
 
@@ -118,28 +119,47 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 return (false, "Usuário não encontrado", null);
             }
 
-            // Validar obrigatoriedade
-            if (string.IsNullOrWhiteSpace(usuario.Nome))
-                erros.Add("Nome é obrigatório");
+            // Validar e atualizar Nome (se fornecido)
+            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Nome))
+            {
+                usuarioExistente.Nome = usuarioAtualizado.Nome.Trim();
+                _logger.LogInformation("Campo Nome atualizado para o usuário Id {Id}", id);
+            }
 
-            if (string.IsNullOrWhiteSpace(usuario.Email))
-                erros.Add("Email é obrigatório");
+            // Validar e atualizar Email (se fornecido)
+            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Email))
+            {
+                // Validar formato de email
+                if (!UsuarioValidador.ValidarEmail(usuarioAtualizado.Email))
+                {
+                    erros.Add("Formato de email inválido");
+                }
+                // Validar email duplicado (excluindo o usuário atual)
+                else if (_usuarios.Any(u => u.Id != id && u.Email == usuarioAtualizado.Email))
+                {
+                    erros.Add("Email já cadastrado por outro usuário");
+                }
+                else
+                {
+                    usuarioExistente.Email = usuarioAtualizado.Email.Trim();
+                    _logger.LogInformation("Campo Email atualizado para o usuário Id {Id}", id);
+                }
+            }
 
-            if (string.IsNullOrWhiteSpace(usuario.Senha))
-                erros.Add("Senha é obrigatória");
-
-            // Validar email
-            if (!string.IsNullOrWhiteSpace(usuario.Email) && !UsuarioValidador.ValidarEmail(usuario.Email))
-                erros.Add("Formato de email inválido");
-
-            // Validar email duplicado (excluindo o usuário atual)
-            if (!string.IsNullOrWhiteSpace(usuario.Email) && 
-                _usuarios.Any(u => u.Id != id && u.Email == usuario.Email))
-                erros.Add("Email já cadastrado por outro usuário");
-
-            // Validar senha segura
-            if (!string.IsNullOrWhiteSpace(usuario.Senha) && !UsuarioValidador.ValidarSenhaSegura(usuario.Senha))
-                erros.Add(UsuarioValidador.ObterMensagemErroSenha());
+            // Validar e atualizar Senha (se fornecido)
+            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Senha))
+            {
+                // Validar senha segura
+                if (!UsuarioValidador.ValidarSenhaSegura(usuarioAtualizado.Senha))
+                {
+                    erros.Add(UsuarioValidador.ObterMensagemErroSenha());
+                }
+                else
+                {
+                    usuarioExistente.Senha = usuarioAtualizado.Senha;
+                    _logger.LogInformation("Campo Senha atualizado para o usuário Id {Id}", id);
+                }
+            }
 
             if (erros.Count > 0)
             {
@@ -147,11 +167,6 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 _logger.LogWarning("Erro ao alterar usuário {Id}: {Erros}", id, mensagem);
                 return (false, mensagem, null);
             }
-
-            // Atualizar usuário
-            usuarioExistente.Nome = usuario.Nome.Trim();
-            usuarioExistente.Email = usuario.Email.Trim();
-            usuarioExistente.Senha = usuario.Senha;
 
             _logger.LogInformation("Usuário alterado com sucesso. Id: {Id}, Nome: {Nome}, Email: {Email}", 
                 usuarioExistente.Id, usuarioExistente.Nome, usuarioExistente.Email);
