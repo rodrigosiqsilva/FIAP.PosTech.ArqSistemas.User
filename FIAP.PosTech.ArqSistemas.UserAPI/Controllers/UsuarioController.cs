@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using FIAP.PosTech.ArqSistemas.UserAPI.Services;
-using FIAP.PosTech.ArqSistemas.UserAPI.Models;
 using FIAP.PosTech.ArqSistemas.UserAPI.DTOs;
+using FIAP.PosTech.ArqSistemas.UserAPI.Models;
+using FIAP.PosTech.ArqSistemas.UserAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
 {
@@ -29,6 +30,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         /// <returns>Lista de todos os usuários</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<List<Usuario>>> ObterTodos()
         {
             try
@@ -55,6 +59,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<Usuario>> ObterPorId(int id)
         {
             try
@@ -96,6 +103,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<Usuario>> Criar([FromBody] Usuario usuario)
         {
             try
@@ -139,6 +149,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<Usuario>> Alterar(int id, [FromBody] AtualizarUsuarioDto usuarioAtualizado)
         {
             try
@@ -195,6 +208,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<object?>> Excluir(int id)
         {
             try

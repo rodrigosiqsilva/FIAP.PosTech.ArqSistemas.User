@@ -54,6 +54,20 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
             return usuario;
         }
 
+        public Usuario Autenticar(string email, string senha)
+        {
+            var usuario = _usuarios.FirstOrDefault(u => u.Email == email && u.Senha == senha);
+            if (usuario == null)
+            {
+                _logger.LogWarning("Usuário com Email {Email} não encontrado. Verifique se a senha e o e-mail estão corretos", email);
+            }
+            else
+            {
+                _logger.LogInformation("Usuário com Email {Email} encontrado: {Nome}", email, usuario.Nome);
+            }
+            return usuario;
+        }
+
         public (bool Sucesso, string Mensagem, Usuario Usuario) Criar(Usuario usuario)
         {
             var erros = new List<string>();

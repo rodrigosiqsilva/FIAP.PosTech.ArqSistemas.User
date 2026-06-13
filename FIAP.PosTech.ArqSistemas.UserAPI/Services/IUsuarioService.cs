@@ -16,6 +16,11 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
         Usuario ObterPorId(int id);
 
         /// <summary>
+        /// Autenticar um usuário pelo email e senha
+        /// </summary>
+        Usuario Autenticar(string email, string senha);
+
+        /// <summary>
         /// Cria um novo usuário
         /// </summary>
         (bool Sucesso, string Mensagem, Usuario Usuario) Criar(Usuario usuario);

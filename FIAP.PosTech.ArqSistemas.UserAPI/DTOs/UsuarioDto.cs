@@ -34,4 +34,13 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.DTOs
         /// </summary>
         public string? Senha { get; set; }
     }
+
+    /// <summary>
+    /// DTO para autenticar um usuário.
+    /// </summary>
+    public class LoginUsuarioDto
+    {
+        public string Email { get; set; }
+        public string Senha { get; set; }
+    }
 }
