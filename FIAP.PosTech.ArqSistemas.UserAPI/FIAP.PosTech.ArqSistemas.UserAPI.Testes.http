@@ -33,10 +33,9 @@ POST {{HostAddress}}/api/usuario
 Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 X-Correlation-Id: test-004
-
 {
-  "nome": "Teste Usuario",
-  "email": "teste@example.com",
+  "nome": "Rodrigo Siqueira Silva",
+  "email": "rodrigosiqueirasilva@hotmail.com",
   "senha": "TesteSenha@123"
 }
 
