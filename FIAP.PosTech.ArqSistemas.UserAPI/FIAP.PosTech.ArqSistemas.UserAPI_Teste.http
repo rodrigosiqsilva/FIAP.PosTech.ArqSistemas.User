@@ -1,15 +1,15 @@
 // Guia de Testes CRUD para API de Usuário
-// URL Base: https://localhost:7011/api/usuario (ajuste a porta conforme necessário)
+// URL Base: https://localhost:7047/api/usuario (ajuste a porta conforme necessário)
 // Todas as requisições incluem o header X-Correlation-Id (gerado automaticamente se não fornecido)
 
 ###
 // 1. OBTER TODOS OS USUÁRIOS
-GET https://localhost:7011/api/usuario
+GET https://localhost:7047/api/usuario
 X-Correlation-Id: test-001
 
 ###
 // 2. OBTER USUÁRIO POR ID (deve encontrar um dos 5 registros iniciais)
-GET https://localhost:7011/api/usuario/1
+GET https://localhost:7047/api/usuario/1
 X-Correlation-Id: test-002
 
 ###
@@ -17,7 +17,7 @@ X-Correlation-Id: test-002
 // Requisitos: Nome, Email, Senha (todos obrigatórios)
 // Formato de Email: email válido
 // Senha: mínimo de 8 caracteres, pelo menos 1 letra, 1 dígito, 1 caractere especial [!@#$%^&*\-_=+]
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 X-Correlation-Id: test-003
 
@@ -31,7 +31,7 @@ X-Correlation-Id: test-003
 // 4. ATUALIZAR USUÁRIO
 // Requisitos: Id na URL (obrigatório), todos os campos no corpo (nome, email, senha)
 // As mesmas regras de validação se aplicam
-PUT https://localhost:7011/api/usuario/1
+PUT https://localhost:7047/api/usuario/1
 Content-Type: application/json
 X-Correlation-Id: test-004
 
@@ -44,14 +44,14 @@ X-Correlation-Id: test-004
 ###
 // 5. EXCLUIR USUÁRIO
 // Requisitos: Apenas Id necessário (na URL)
-DELETE https://localhost:7011/api/usuario/6
+DELETE https://localhost:7047/api/usuario/6
 X-Correlation-Id: test-005
 
 ###
 // Casos de teste para erros de validação:
 
 // ERRO: Formato de email inválido
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 
 {
@@ -62,7 +62,7 @@ Content-Type: application/json
 
 ###
 // ERRO: Senha fraca (menos de 8 caracteres)
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 
 {
@@ -73,7 +73,7 @@ Content-Type: application/json
 
 ###
 // ERRO: Senha sem caractere especial
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 
 {
@@ -84,7 +84,7 @@ Content-Type: application/json
 
 ###
 // ERRO: Email duplicado
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 
 {
@@ -95,18 +95,10 @@ Content-Type: application/json
 
 ###
 // ERRO: Campo obrigatório ausente (Email)
-POST https://localhost:7011/api/usuario
+POST https://localhost:7047/api/usuario
 Content-Type: application/json
 
 {
   "nome": "Test User",
   "senha": "ValidSenha@123"
 }
-
-###
-// Dados iniciais para referência:
-// 1. Id: 1, Nome: "João Silva", Email: "joao@example.com", Senha: "SenhaSegura@123"
-// 2. Id: 2, Nome: "Maria Santos", Email: "maria@example.com", Senha: "OutraSenha#456"
-// 3. Id: 3, Nome: "Pedro Oliveira", Email: "pedro@example.com", Senha: "MaisSenha!789"
-// 4. Id: 4, Nome: "Ana Costa", Email: "ana@example.com", Senha: "Senha@Teste#101"
-// 5. Id: 5, Nome: "Carlos Mendes", Email: "carlos@example.com", Senha: "CarlosSenha$202"
