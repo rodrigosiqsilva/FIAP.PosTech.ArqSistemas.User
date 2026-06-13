@@ -1,17 +1,24 @@
 using Microsoft.OpenApi.Models;
+using FIAP.PosTech.ArqSistemas.UserAPI.Middlewares;
+using FIAP.PosTech.ArqSistemas.UserAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configurar logging estruturado
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
+// Add services to the container.
 builder.Services.AddControllers();
+
+// Register Usuario Service
+builder.Services.AddSingleton<IUsuarioService, UsuarioService>();
+
 // Configure OpenAPI/Swagger using Swashbuckle
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-// Register Swagger generator and explorer so the Swagger UI is available at /swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "FIAP Cloud Games (FCG)",
@@ -32,8 +39,18 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+// Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FIAP Cloud Games (FCG) v1");
+    c.RoutePrefix = "swagger";
+});
+
+// Usar middleware de correlationId e tratamento de erros global
+app.UseCorrelationId();
 
 app.UseHttpsRedirection();
 
@@ -41,4 +58,15 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// Log ao iniciar a aplicação
+logger.LogInformation("Iniciando aplicação FIAP Cloud Games (FCG)");
+
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.LogCritical(ex, "Aplicação encerrada com erro");
+}
+

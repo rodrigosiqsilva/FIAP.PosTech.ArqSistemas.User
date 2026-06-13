@@ -1,0 +1,112 @@
+// CRUD Testing Guide for Usuario API
+// Base URL: https://localhost:7011/api/usuario (adjust port as needed)
+// All requests include X-Correlation-Id header (auto-generated if not provided)
+
+###
+// 1. GET ALL USUARIOS
+GET https://localhost:7011/api/usuario
+X-Correlation-Id: test-001
+
+###
+// 2. GET USUARIO BY ID (should find one of the 5 seed records)
+GET https://localhost:7011/api/usuario/1
+X-Correlation-Id: test-002
+
+###
+// 3. CREATE NEW USUARIO
+// Requirements: Nome, Email, Senha (all required)
+// Email format: valid email format
+// Senha: minimum 8 characters, at least 1 letter, 1 digit, 1 special char [!@#$%^&*\-_=+]
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+X-Correlation-Id: test-003
+
+{
+  "nome": "Teste Usuario",
+  "email": "teste@example.com",
+  "senha": "TesteSenha@123"
+}
+
+###
+// 4. UPDATE USUARIO
+// Requirements: Id in URL (required), all fields in body (nome, email, senha)
+// Same validation rules apply
+PUT https://localhost:7011/api/usuario/1
+Content-Type: application/json
+X-Correlation-Id: test-004
+
+{
+  "nome": "João Silva Atualizado",
+  "email": "joao.atualizado@example.com",
+  "senha": "NovaSenha@456"
+}
+
+###
+// 5. DELETE USUARIO
+// Requirements: Only Id needed (in URL)
+DELETE https://localhost:7011/api/usuario/6
+X-Correlation-Id: test-005
+
+###
+// Test cases for validation errors:
+
+// ERROR: Invalid email format
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+
+{
+  "nome": "Test User",
+  "email": "invalid-email",
+  "senha": "ValidSenha@123"
+}
+
+###
+// ERROR: Weak password (less than 8 characters)
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+
+{
+  "nome": "Test User",
+  "email": "valid@example.com",
+  "senha": "Weak@1"
+}
+
+###
+// ERROR: Password without special character
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+
+{
+  "nome": "Test User",
+  "email": "valid@example.com",
+  "senha": "NoSpecialChar123"
+}
+
+###
+// ERROR: Duplicate email
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+
+{
+  "nome": "Another User",
+  "email": "joao@example.com",
+  "senha": "ValidSenha@123"
+}
+
+###
+// ERROR: Missing required field (Email)
+POST https://localhost:7011/api/usuario
+Content-Type: application/json
+
+{
+  "nome": "Test User",
+  "senha": "ValidSenha@123"
+}
+
+###
+// Seed data for reference:
+// 1. Id: 1, Nome: "João Silva", Email: "joao@example.com", Senha: "SenhaSegura@123"
+// 2. Id: 2, Nome: "Maria Santos", Email: "maria@example.com", Senha: "OutraSenha#456"
+// 3. Id: 3, Nome: "Pedro Oliveira", Email: "pedro@example.com", Senha: "MaisSenha!789"
+// 4. Id: 4, Nome: "Ana Costa", Email: "ana@example.com", Senha: "Senha@Teste#101"
+// 5. Id: 5, Nome: "Carlos Mendes", Email: "carlos@example.com", Senha: "CarlosSenha$202"
