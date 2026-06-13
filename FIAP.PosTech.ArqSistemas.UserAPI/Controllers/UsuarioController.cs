@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FIAP.PosTech.ArqSistemas.UserAPI.Services;
 using FIAP.PosTech.ArqSistemas.UserAPI.Models;
 
@@ -18,6 +18,11 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         }
 
         /// <summary>
+        /// Obtém o CorrelationId do contexto HTTP
+        /// </summary>
+        private string? GetCorrelationId() => HttpContext.Items["CorrelationId"]?.ToString();
+
+        /// <summary>
         /// Obtém todos os usuários
         /// </summary>
         /// <returns>Lista de todos os usuários</returns>
@@ -29,14 +34,14 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
             {
                 var usuarios = _usuarioService.ObterTodos();
                 var response = ApiResponse<List<Usuario>>.SucessoList(usuarios, $"Total de {usuarios.Count} usuários encontrados");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter todos os usuários");
                 var response = ApiResponse<List<Usuario>>.Erro(ex.Message, "Erro ao obter usuários");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -56,7 +61,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 if (id <= 0)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro("Id deve ser um número positivo", "Validação falhou");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
@@ -65,19 +70,19 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 if (usuario == null)
                 {
                     var notFoundResponse = ApiResponse<Usuario>.NotFound($"Usuário com Id {id} não encontrado");
-                    notFoundResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    notFoundResponse.CorrelationId = GetCorrelationId();
                     return NotFound(notFoundResponse);
                 }
 
                 var response = ApiResponse<Usuario>.SucessoOk(usuario, "Usuário encontrado com sucesso");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter usuário com Id {Id}", id);
                 var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao obter usuário");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -97,7 +102,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 if (usuario == null)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
@@ -106,19 +111,19 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 if (!sucesso)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro(mensagem, "Erro ao criar usuário");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
                 var response = ApiResponse<Usuario>.SucessoCreate(usuarioCriado, mensagem);
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return CreatedAtAction(nameof(ObterPorId), new { id = usuarioCriado.Id }, response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao criar usuário");
                 var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao criar usuário");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -140,14 +145,14 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 if (usuario == null)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
                 if (id <= 0)
                 {
                     var errorResponse = ApiResponse<Usuario>.Erro("Id deve ser um número positivo", "Validação falhou");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
@@ -158,24 +163,24 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                     if (mensagem == "Usuário não encontrado")
                     {
                         var notFoundResponse = ApiResponse<Usuario>.NotFound(mensagem);
-                        notFoundResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                        notFoundResponse.CorrelationId = GetCorrelationId();
                         return NotFound(notFoundResponse);
                     }
 
                     var errorResponse = ApiResponse<Usuario>.Erro(mensagem, "Erro ao alterar usuário");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
                 var response = ApiResponse<Usuario>.SucessoOk(usuarioAlterado, mensagem);
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao alterar usuário com Id {Id}", id);
                 var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao alterar usuário");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -189,14 +194,14 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ApiResponse<object>> Excluir(int id)
+        public ActionResult<ApiResponse<object?>> Excluir(int id)
         {
             try
             {
                 if (id <= 0)
                 {
-                    var errorResponse = ApiResponse<object>.Erro("Id deve ser um número positivo", "Validação falhou");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    var errorResponse = ApiResponse<object?>.Erro("Id deve ser um número positivo", "Validação falhou");
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
@@ -206,25 +211,25 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 {
                     if (mensagem == "Usuário não encontrado")
                     {
-                        var notFoundResponse = ApiResponse<object>.NotFound(mensagem);
-                        notFoundResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                        var notFoundResponse = ApiResponse<object?>.NotFound(mensagem);
+                        notFoundResponse.CorrelationId = GetCorrelationId();
                         return NotFound(notFoundResponse);
                     }
 
-                    var errorResponse = ApiResponse<object>.Erro(mensagem, "Erro ao excluir usuário");
-                    errorResponse.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                    var errorResponse = ApiResponse<object?>.Erro(mensagem, "Erro ao excluir usuário");
+                    errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var response = ApiResponse<object>.SucessoOk(null, mensagem);
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                var response = ApiResponse<object?>.SucessoOk(null, mensagem);
+                response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao excluir usuário com Id {Id}", id);
-                var response = ApiResponse<object>.Erro(ex.Message, "Erro ao excluir usuário");
-                response.CorrelationId = HttpContext.Items["CorrelationId"]?.ToString();
+                var response = ApiResponse<object?>.Erro(ex.Message, "Erro ao excluir usuário");
+                response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }

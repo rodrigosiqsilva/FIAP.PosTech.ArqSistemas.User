@@ -21,8 +21,8 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Middlewares
                 ? context.Request.Headers[CorrelationIdHeader].ToString()
                 : Guid.NewGuid().ToString();
 
-            // Adiciona correlationId aos headers de resposta
-            context.Response.Headers.Add(CorrelationIdHeader, correlationId);
+            // Adiciona correlationId aos headers de resposta (usando indexer em vez de Add)
+            context.Response.Headers[CorrelationIdHeader] = correlationId;
 
             // Armazena no contexto para uso nos logs
             context.Items["CorrelationId"] = correlationId;

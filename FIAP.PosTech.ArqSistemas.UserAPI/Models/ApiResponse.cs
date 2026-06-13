@@ -4,9 +4,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Models
     {
         public bool Sucesso { get; set; }
         public string Mensagem { get; set; }
-        public T Dados { get; set; }
+        public T? Dados { get; set; }
         public List<string> ListaErros { get; set; }
-        public string CorrelationId { get; set; }
+        public string? CorrelationId { get; set; }
         public DateTime Timestamp { get; set; }
 
         public ApiResponse()
