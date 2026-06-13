@@ -1,6 +1,7 @@
-using FIAP.PosTech.ArqSistemas.UserAPI.Models;
-using FIAP.PosTech.ArqSistemas.UserAPI.Validators;
 using FIAP.PosTech.ArqSistemas.UserAPI.DTOs;
+using FIAP.PosTech.ArqSistemas.UserAPI.Models;
+using FIAP.PosTech.ArqSistemas.UserAPI.Publisher;
+using FIAP.PosTech.ArqSistemas.UserAPI.Validators;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 {
@@ -208,5 +209,6 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 
             return (true, "Usuário excluído com sucesso");
         }
+
     }
 }

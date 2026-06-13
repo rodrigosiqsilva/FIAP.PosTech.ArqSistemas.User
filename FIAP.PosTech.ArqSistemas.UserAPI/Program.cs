@@ -22,6 +22,7 @@ builder.Services.AddControllers();
 
 // Register Usuario Service
 builder.Services.AddSingleton<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IUsuarioNotificarService, UsuarioNotificarService>();
 
 // Configure OpenAPI/Swagger using Swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -12,11 +12,13 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly ILogger<UsuarioController> _logger;
+        private readonly IUsuarioNotificarService _usuarioNotificarService;
 
-        public UsuarioController(IUsuarioService usuarioService, ILogger<UsuarioController> logger)
+        public UsuarioController(IUsuarioService usuarioService, ILogger<UsuarioController> logger, IUsuarioNotificarService usuarioNotificarService)
         {
             _usuarioService = usuarioService;
             _logger = logger;
+            _usuarioNotificarService = usuarioNotificarService;
         }
 
         /// <summary>
@@ -128,6 +130,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
 
                 var response = ApiResponse<Usuario>.SucessoCreate(usuarioCriado, mensagem);
                 response.CorrelationId = GetCorrelationId();
+
+                var notificar = _usuarioNotificarService.NotificarUsuario(usuarioCriado, GetCorrelationId());
+
                 return CreatedAtAction(nameof(ObterPorId), new { id = usuarioCriado.Id }, response);
             }
             catch (Exception ex)
