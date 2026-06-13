@@ -4,18 +4,18 @@ using FIAP.PosTech.ArqSistemas.UserAPI.Publisher;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 {
-    public class UsuarioNotificarService : IUsuarioNotificarService
+    public class UsuarioNotificacaoService : IUsuarioNotificacaoService
     {
-        private readonly ILogger<UsuarioNotificarService> _logger;
+        private readonly ILogger<UsuarioNotificacaoService> _logger;
         private readonly IConfiguration _configuration;
 
-        public UsuarioNotificarService(ILogger<UsuarioNotificarService> logger, IConfiguration configuration)
+        public UsuarioNotificacaoService(ILogger<UsuarioNotificacaoService> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
         }
 
-        public async Task NotificarUsuario(Usuario usuario, string? correlationId)
+        public async Task EnviarNotificacaoUsuario(Usuario usuario, string? correlationId)
         {
             string bootstrapServers = _configuration["KafkaConfig:BootstrapServers"];
             string topicName = _configuration["KafkaConfig:TopicName"];
@@ -42,5 +42,6 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 }
             }
         }
+
     }
 }
