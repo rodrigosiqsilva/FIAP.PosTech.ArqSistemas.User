@@ -8,17 +8,17 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IUsuarioService _usuarioService;
-        private readonly ILogger<UsuarioController> _logger;
-        private readonly IUsuarioNotificacaoService _usuarioNotificacaoService;
+        private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
+        private readonly IUserNotificationService _userNotificationService;
 
-        public UsuarioController(IUsuarioService usuarioService, ILogger<UsuarioController> logger, IUsuarioNotificacaoService usuarioNotificacaoService)
+        public UserController(IUserService userService, ILogger<UserController> logger, IUserNotificationService userNotificationService)
         {
-            _usuarioService = usuarioService;
+            _userService = userService;
             _logger = logger;
-            _usuarioNotificacaoService = usuarioNotificacaoService;
+            _userNotificationService = userNotificationService;
         }
 
         /// <summary>
@@ -35,19 +35,19 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Admin")]
-        public ActionResult<ApiResponse<List<Usuario>>> ObterTodos()
+        public ActionResult<ApiResponse<List<User>>> ObterTodos()
         {
             try
             {
-                var usuarios = _usuarioService.ObterTodos();
-                var response = ApiResponse<List<Usuario>>.SucessoList(usuarios, $"Total de {usuarios.Count} usuários encontrados");
+                var users = _userService.ObterTodos();
+                var response = ApiResponse<List<User>>.SucessoList(users, $"Total de {users.Count} usuários encontrados");
                 response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter todos os usuários");
-                var response = ApiResponse<List<Usuario>>.Erro(ex.Message, "Erro ao obter usuários");
+                var response = ApiResponse<List<User>>.Erro(ex.Message, "Erro ao obter usuários");
                 response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
@@ -64,34 +64,34 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Admin")]
-        public ActionResult<ApiResponse<Usuario>> ObterPorId(int id)
+        public ActionResult<ApiResponse<User>> ObterPorId(int id)
         {
             try
             {
                 if (id <= 0)
                 {
-                    var errorResponse = ApiResponse<Usuario>.Erro("Id deve ser um número positivo", "Validação falhou");
+                    var errorResponse = ApiResponse<User>.Erro("Id deve ser um número positivo", "Validação falhou");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var usuario = _usuarioService.ObterPorId(id);
+                var user = _userService.ObterPorId(id);
 
-                if (usuario == null)
+                if (user == null)
                 {
-                    var notFoundResponse = ApiResponse<Usuario>.NotFound($"Usuário com Id {id} não encontrado");
+                    var notFoundResponse = ApiResponse<User>.NotFound($"Usuário com Id {id} não encontrado");
                     notFoundResponse.CorrelationId = GetCorrelationId();
                     return NotFound(notFoundResponse);
                 }
 
-                var response = ApiResponse<Usuario>.SucessoOk(usuario, "Usuário encontrado com sucesso");
+                var response = ApiResponse<User>.SucessoOk(user, "Usuário encontrado com sucesso");
                 response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter usuário com Id {Id}", id);
-                var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao obter usuário");
+                var response = ApiResponse<User>.Erro(ex.Message, "Erro ao obter usuário");
                 response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
@@ -100,7 +100,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         /// <summary>
         /// Cria um novo usuário
         /// </summary>
-        /// <param name="usuario">Dados do usuário a ser criado (não incluir Id)</param>
+        /// <param name="user">Dados do usuário a ser criado (não incluir Id)</param>
         /// <returns>Usuário criado com Id gerado automaticamente</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -108,37 +108,37 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Admin")]
-        public ActionResult<ApiResponse<Usuario>> Criar([FromBody] Usuario usuario)
+        public ActionResult<ApiResponse<User>> Criar([FromBody] User user)
         {
             try
             {
-                if (usuario == null)
+                if (user == null)
                 {
-                    var errorResponse = ApiResponse<Usuario>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
+                    var errorResponse = ApiResponse<User>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var (sucesso, mensagem, usuarioCriado) = _usuarioService.Criar(usuario);
+                var (sucesso, mensagem, userCriado) = _userService.Criar(user);
 
                 if (!sucesso)
                 {
-                    var errorResponse = ApiResponse<Usuario>.Erro(mensagem, "Erro ao criar usuário");
+                    var errorResponse = ApiResponse<User>.Erro(mensagem, "Erro ao criar usuário");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var response = ApiResponse<Usuario>.SucessoCreate(usuarioCriado, mensagem);
+                var response = ApiResponse<User>.SucessoCreate(userCriado, mensagem);
                 response.CorrelationId = GetCorrelationId();
 
-                var notificar = _usuarioNotificacaoService.EnviarNotificacaoUsuario(usuarioCriado, GetCorrelationId());
+                var notificar = _userNotificationService.SendNotificationUser(userCriado, GetCorrelationId());
 
-                return CreatedAtAction(nameof(ObterPorId), new { id = usuarioCriado.Id }, response);
+                return CreatedAtAction(nameof(ObterPorId), new { id = userCriado.Id }, response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao criar usuário");
-                var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao criar usuário");
+                var response = ApiResponse<User>.Erro(ex.Message, "Erro ao criar usuário");
                 response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
@@ -148,7 +148,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         /// Altera um usuário existente (partial update)
         /// </summary>
         /// <param name="id">Id do usuário a ser alterado (obrigatório)</param>
-        /// <param name="usuarioAtualizado">Dados a serem atualizados. Todos os campos são opcionais - apenas os fornecidos serão alterados.</param>
+        /// <param name="userAtualizado">Dados a serem atualizados. Todos os campos são opcionais - apenas os fornecidos serão alterados.</param>
         /// <returns>Usuário alterado</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -157,48 +157,48 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Admin")]
-        public ActionResult<ApiResponse<Usuario>> Alterar(int id, [FromBody] AtualizarUsuarioDto usuarioAtualizado)
+        public ActionResult<ApiResponse<User>> Alterar(int id, [FromBody] AtualizarUserDto userAtualizado)
         {
             try
             {
-                if (usuarioAtualizado == null)
+                if (userAtualizado == null)
                 {
-                    var errorResponse = ApiResponse<Usuario>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
+                    var errorResponse = ApiResponse<User>.Erro("Corpo da requisição não pode estar vazio", "Validação falhou");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
                 if (id <= 0)
                 {
-                    var errorResponse = ApiResponse<Usuario>.Erro("Id deve ser um número positivo", "Validação falhou");
+                    var errorResponse = ApiResponse<User>.Erro("Id deve ser um número positivo", "Validação falhou");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var (sucesso, mensagem, usuarioAlterado) = _usuarioService.Alterar(id, usuarioAtualizado);
+                var (sucesso, mensagem, userAlterado) = _userService.Alterar(id, userAtualizado);
 
                 if (!sucesso)
                 {
                     if (mensagem == "Usuário não encontrado")
                     {
-                        var notFoundResponse = ApiResponse<Usuario>.NotFound(mensagem);
+                        var notFoundResponse = ApiResponse<User>.NotFound(mensagem);
                         notFoundResponse.CorrelationId = GetCorrelationId();
                         return NotFound(notFoundResponse);
                     }
 
-                    var errorResponse = ApiResponse<Usuario>.Erro(mensagem, "Erro ao alterar usuário");
+                    var errorResponse = ApiResponse<User>.Erro(mensagem, "Erro ao alterar usuário");
                     errorResponse.CorrelationId = GetCorrelationId();
                     return BadRequest(errorResponse);
                 }
 
-                var response = ApiResponse<Usuario>.SucessoOk(usuarioAlterado, mensagem);
+                var response = ApiResponse<User>.SucessoOk(userAlterado, mensagem);
                 response.CorrelationId = GetCorrelationId();
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao alterar usuário com Id {Id}", id);
-                var response = ApiResponse<Usuario>.Erro(ex.Message, "Erro ao alterar usuário");
+                var response = ApiResponse<User>.Erro(ex.Message, "Erro ao alterar usuário");
                 response.CorrelationId = GetCorrelationId();
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
@@ -227,7 +227,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                     return BadRequest(errorResponse);
                 }
 
-                var (sucesso, mensagem) = _usuarioService.Excluir(id);
+                var (sucesso, mensagem) = _userService.Excluir(id);
 
                 if (!sucesso)
                 {

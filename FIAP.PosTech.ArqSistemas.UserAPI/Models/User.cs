@@ -1,6 +1,6 @@
 ﻿namespace FIAP.PosTech.ArqSistemas.UserAPI.Models
 {
-    public class Usuario
+    public class User
     {
         public int Id { get; set; }
         public string Nome { get; set; }

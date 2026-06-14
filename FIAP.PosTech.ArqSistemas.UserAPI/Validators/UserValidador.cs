@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Validators
 {
-    public static class UsuarioValidador
+    public static class UserValidador
     {
         /// <summary>
         /// Valida o formato de email

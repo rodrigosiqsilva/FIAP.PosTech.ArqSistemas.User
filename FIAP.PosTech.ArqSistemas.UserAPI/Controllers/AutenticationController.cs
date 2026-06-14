@@ -9,15 +9,15 @@ using System.Text.Json;
 
 namespace FIAP.PosTech.ArqSistemas.CloudGames.Api.Controllers
 {
-    public class AutenticacaoController : ControllerBase 
+    public class AutenticationController : ControllerBase 
     {
 
-        private readonly IUsuarioService _autenticacaoService;
-        private readonly ILogger<AutenticacaoController> _logger;
+        private readonly IUserService _autenticacaoService;
+        private readonly ILogger<AutenticationController> _logger;
         private readonly IConfiguration _configuration;
 
-        public AutenticacaoController(IUsuarioService
-            autenticacaoService, ILogger<AutenticacaoController> logger, IConfiguration configuration)
+        public AutenticationController(IUserService
+            autenticacaoService, ILogger<AutenticationController> logger, IConfiguration configuration)
         {
             _autenticacaoService = autenticacaoService;
             _logger = logger;
@@ -29,7 +29,7 @@ namespace FIAP.PosTech.ArqSistemas.CloudGames.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Login([FromBody] LoginUsuarioDto login)
+        public IActionResult Login([FromBody] LoginUserDto login)
         {
             _logger.LogInformation($"Iniciando autenticação do usuário: {login.Email} senha: {login.Senha}");
 

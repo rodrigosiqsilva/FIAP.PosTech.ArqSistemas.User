@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Publisher
 {
-    public record UserCreatedEvent(Usuario Usuario, DateTime CreatedAt, string? CorrelationId);
+    public record UserCreatedEvent(User User, DateTime CreatedAt, string? CorrelationId);
 
     public class UserEventPublisher : IDisposable
     {
@@ -38,7 +38,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Publisher
                 // Prepara a mensagem do Kafka
                 var message = new Message<string, string>
                 {
-                    Key = userEvent.Usuario.Id.ToString(), // Usar o ID como chave garante a ordenação na mesma partição
+                    Key = userEvent.User.Id.ToString(), // Usar o ID como chave garante a ordenação na mesma partição
                     Value = messageValue
                 };
 

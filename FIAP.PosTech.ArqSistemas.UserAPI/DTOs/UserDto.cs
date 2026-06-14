@@ -4,7 +4,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.DTOs
     /// DTO para criar um novo usuário.
     /// Não deve conter Id (será gerado automaticamente no servidor)
     /// </summary>
-    public class CriarUsuarioDto
+    public class CriarUserDto
     {
         public string Nome { get; set; }
         public string Email { get; set; }
@@ -15,7 +15,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.DTOs
     /// DTO para atualizar um usuário existente (partial update).
     /// Todos os campos são opcionais - apenas os campos fornecidos serão validados e atualizados.
     /// </summary>
-    public class AtualizarUsuarioDto
+    public class AtualizarUserDto
     {
         /// <summary>
         /// Nome do usuário. Opcional - se omitido, não será alterado.
@@ -38,7 +38,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.DTOs
     /// <summary>
     /// DTO para autenticar um usuário.
     /// </summary>
-    public class LoginUsuarioDto
+    public class LoginUserDto
     {
         public string Email { get; set; }
         public string Senha { get; set; }

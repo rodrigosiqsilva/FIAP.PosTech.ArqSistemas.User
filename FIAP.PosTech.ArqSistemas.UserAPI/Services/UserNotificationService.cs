@@ -4,25 +4,25 @@ using FIAP.PosTech.ArqSistemas.UserAPI.Publisher;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 {
-    public class UsuarioNotificacaoService : IUsuarioNotificacaoService
+    public class UserNotificationService : IUserNotificationService
     {
-        private readonly ILogger<UsuarioNotificacaoService> _logger;
+        private readonly ILogger<UserNotificationService> _logger;
         private readonly IConfiguration _configuration;
 
-        public UsuarioNotificacaoService(ILogger<UsuarioNotificacaoService> logger, IConfiguration configuration)
+        public UserNotificationService(ILogger<UserNotificationService> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
         }
 
-        public async Task EnviarNotificacaoUsuario(Usuario usuario, string? correlationId)
+        public async Task SendNotificationUser(User user, string? correlationId)
         {
             string bootstrapServers = _configuration["KafkaConfig:BootstrapServers"];
             string topicName = _configuration["KafkaConfig:TopicName"];
 
             // Cria o evento
             var newEvent = new UserCreatedEvent(
-                Usuario: usuario,
+                User: user,
                 CreatedAt: DateTime.UtcNow,
                 CorrelationId: correlationId
             );

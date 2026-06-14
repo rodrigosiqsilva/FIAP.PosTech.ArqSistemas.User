@@ -5,16 +5,16 @@ using FIAP.PosTech.ArqSistemas.UserAPI.Validators;
 
 namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
 {
-    public class UsuarioService : IUsuarioService
+    public class UserService : IUserService
     {
-        private readonly List<Usuario> _usuarios;
-        private readonly ILogger<UsuarioService> _logger;
+        private readonly List<User> _user;
+        private readonly ILogger<UserService> _logger;
         private int _proximoId = 6;
 
-        public UsuarioService(ILogger<UsuarioService> logger)
+        public UserService(ILogger<UserService> logger)
         {
             _logger = logger;
-            _usuarios = new List<Usuario>();
+            _user = new List<User>();
             InicializarDados();
         }
 
@@ -23,77 +23,77 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
         /// </summary>
         private void InicializarDados()
         {
-            _usuarios.AddRange(new[]
+            _user.AddRange(new[]
             {
-                new Usuario { Id = 1, Nome = "João Silva", Email = "joao@example.com", Senha = "SenhaSegura@123" },
-                new Usuario { Id = 2, Nome = "Maria Santos", Email = "maria@example.com", Senha = "OutraSenha#456" },
-                new Usuario { Id = 3, Nome = "Pedro Oliveira", Email = "pedro@example.com", Senha = "MaisSenha!789" },
-                new Usuario { Id = 4, Nome = "Ana Costa", Email = "ana@example.com", Senha = "Senha@Teste#101" },
-                new Usuario { Id = 5, Nome = "Carlos Mendes", Email = "carlos@example.com", Senha = "CarlosSenha$202" }
+                new User { Id = 1, Nome = "João Silva", Email = "joao@example.com", Senha = "SenhaSegura@123" },
+                new User { Id = 2, Nome = "Maria Santos", Email = "maria@example.com", Senha = "OutraSenha#456" },
+                new User { Id = 3, Nome = "Pedro Oliveira", Email = "pedro@example.com", Senha = "MaisSenha!789" },
+                new User { Id = 4, Nome = "Ana Costa", Email = "ana@example.com", Senha = "Senha@Teste#101" },
+                new User { Id = 5, Nome = "Carlos Mendes", Email = "carlos@example.com", Senha = "CarlosSenha$202" }
             });
 
-            _logger.LogInformation("Dados iniciais de usuários carregados com sucesso. Total de registros: {TotalRegistros}", _usuarios.Count);
+            _logger.LogInformation("Dados iniciais de usuários carregados com sucesso. Total de registros: {TotalRegistros}", _user.Count);
         }
 
-        public List<Usuario> ObterTodos()
+        public List<User> ObterTodos()
         {
-            _logger.LogInformation("Obtendo todos os usuários. Total: {Total}", _usuarios.Count);
-            return _usuarios.ToList();
+            _logger.LogInformation("Obtendo todos os usuários. Total: {Total}", _user.Count);
+            return _user.ToList();
         }
 
-        public Usuario ObterPorId(int id)
+        public User ObterPorId(int id)
         {
-            var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
+            var user = _user.FirstOrDefault(u => u.Id == id);
+            if (user == null)
             {
                 _logger.LogWarning("Usuário com Id {Id} não encontrado", id);
             }
             else
             {
-                _logger.LogInformation("Usuário com Id {Id} encontrado: {Nome}", id, usuario.Nome);
+                _logger.LogInformation("Usuário com Id {Id} encontrado: {Nome}", id, user.Nome);
             }
-            return usuario;
+            return user;
         }
 
-        public Usuario Autenticar(string email, string senha)
+        public User Autenticar(string email, string senha)
         {
-            var usuario = _usuarios.FirstOrDefault(u => u.Email == email && u.Senha == senha);
-            if (usuario == null)
+            var user = _user.FirstOrDefault(u => u.Email == email && u.Senha == senha);
+            if (user == null)
             {
                 _logger.LogWarning("Usuário com Email {Email} não encontrado. Verifique se a senha e o e-mail estão corretos", email);
             }
             else
             {
-                _logger.LogInformation("Usuário com Email {Email} encontrado: {Nome}", email, usuario.Nome);
+                _logger.LogInformation("Usuário com Email {Email} encontrado: {Nome}", email, user.Nome);
             }
-            return usuario;
+            return user;
         }
 
-        public (bool Sucesso, string Mensagem, Usuario Usuario) Criar(Usuario usuario)
+        public (bool Sucesso, string Mensagem, User User) Criar(User user)
         {
             var erros = new List<string>();
 
             // Validar obrigatoriedade
-            if (string.IsNullOrWhiteSpace(usuario.Nome))
+            if (string.IsNullOrWhiteSpace(user.Nome))
                 erros.Add("Nome é obrigatório");
 
-            if (string.IsNullOrWhiteSpace(usuario.Email))
+            if (string.IsNullOrWhiteSpace(user.Email))
                 erros.Add("Email é obrigatório");
 
-            if (string.IsNullOrWhiteSpace(usuario.Senha))
+            if (string.IsNullOrWhiteSpace(user.Senha))
                 erros.Add("Senha é obrigatória");
 
             // Validar email
-            if (!string.IsNullOrWhiteSpace(usuario.Email) && !UsuarioValidador.ValidarEmail(usuario.Email))
+            if (!string.IsNullOrWhiteSpace(user.Email) && !UserValidador.ValidarEmail(user.Email))
                 erros.Add("Formato de email inválido");
 
             // Validar email duplicado
-            if (!string.IsNullOrWhiteSpace(usuario.Email) && _usuarios.Any(u => u.Email == usuario.Email))
+            if (!string.IsNullOrWhiteSpace(user.Email) && _user.Any(u => u.Email == user.Email))
                 erros.Add("Email já cadastrado");
 
             // Validar senha segura
-            if (!string.IsNullOrWhiteSpace(usuario.Senha) && !UsuarioValidador.ValidarSenhaSegura(usuario.Senha))
-                erros.Add(UsuarioValidador.ObterMensagemErroSenha());
+            if (!string.IsNullOrWhiteSpace(user.Senha) && !UserValidador.ValidarSenhaSegura(user.Senha))
+                erros.Add(UserValidador.ObterMensagemErroSenha());
 
             if (erros.Count > 0)
             {
@@ -103,22 +103,22 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
             }
 
             // Criar novo usuário com Id gerado
-            var novoUsuario = new Usuario
+            var novoUser= new User
             {
                 Id = _proximoId++,
-                Nome = usuario.Nome.Trim(),
-                Email = usuario.Email.Trim(),
-                Senha = usuario.Senha
+                Nome = user.Nome.Trim(),
+                Email = user.Email.Trim(),
+                Senha = user.Senha
             };
 
-            _usuarios.Add(novoUsuario);
+            _user.Add(novoUser);
             _logger.LogInformation("Usuário criado com sucesso. Id: {Id}, Nome: {Nome}, Email: {Email}", 
-                novoUsuario.Id, novoUsuario.Nome, novoUsuario.Email);
+                novoUser.Id, novoUser.Nome, novoUser.Email);
 
-            return (true, "Usuário criado com sucesso", novoUsuario);
+            return (true, "Usuário criado com sucesso", novoUser);
         }
 
-        public (bool Sucesso, string Mensagem, Usuario Usuario) Alterar(int id, AtualizarUsuarioDto usuarioAtualizado)
+        public (bool Sucesso, string Mensagem, User User) Alterar(int id, AtualizarUserDto userAtualizado)
         {
             var erros = new List<string>();
 
@@ -127,51 +127,51 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 erros.Add("Id deve ser um número positivo");
 
             // Localizar usuário
-            var usuarioExistente = _usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuarioExistente == null)
+            var userExistente = _user.FirstOrDefault(u => u.Id == id);
+            if (userExistente == null)
             {
                 _logger.LogWarning("Erro ao alterar: Usuário com Id {Id} não encontrado", id);
                 return (false, "Usuário não encontrado", null);
             }
 
             // Validar e atualizar Nome (se fornecido)
-            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Nome))
+            if (!string.IsNullOrWhiteSpace(userAtualizado.Nome))
             {
-                usuarioExistente.Nome = usuarioAtualizado.Nome.Trim();
+                userExistente.Nome = userAtualizado.Nome.Trim();
                 _logger.LogInformation("Campo Nome atualizado para o usuário Id {Id}", id);
             }
 
             // Validar e atualizar Email (se fornecido)
-            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Email))
+            if (!string.IsNullOrWhiteSpace(userAtualizado.Email))
             {
                 // Validar formato de email
-                if (!UsuarioValidador.ValidarEmail(usuarioAtualizado.Email))
+                if (!UserValidador.ValidarEmail(userAtualizado.Email))
                 {
                     erros.Add("Formato de email inválido");
                 }
                 // Validar email duplicado (excluindo o usuário atual)
-                else if (_usuarios.Any(u => u.Id != id && u.Email == usuarioAtualizado.Email))
+                else if (_user.Any(u => u.Id != id && u.Email == userAtualizado.Email))
                 {
                     erros.Add("Email já cadastrado por outro usuário");
                 }
                 else
                 {
-                    usuarioExistente.Email = usuarioAtualizado.Email.Trim();
+                    userExistente.Email = userAtualizado.Email.Trim();
                     _logger.LogInformation("Campo Email atualizado para o usuário Id {Id}", id);
                 }
             }
 
             // Validar e atualizar Senha (se fornecido)
-            if (!string.IsNullOrWhiteSpace(usuarioAtualizado.Senha))
+            if (!string.IsNullOrWhiteSpace(userAtualizado.Senha))
             {
                 // Validar senha segura
-                if (!UsuarioValidador.ValidarSenhaSegura(usuarioAtualizado.Senha))
+                if (!UserValidador.ValidarSenhaSegura(userAtualizado.Senha))
                 {
-                    erros.Add(UsuarioValidador.ObterMensagemErroSenha());
+                    erros.Add(UserValidador.ObterMensagemErroSenha());
                 }
                 else
                 {
-                    usuarioExistente.Senha = usuarioAtualizado.Senha;
+                    userExistente.Senha = userAtualizado.Senha;
                     _logger.LogInformation("Campo Senha atualizado para o usuário Id {Id}", id);
                 }
             }
@@ -184,9 +184,9 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
             }
 
             _logger.LogInformation("Usuário alterado com sucesso. Id: {Id}, Nome: {Nome}, Email: {Email}", 
-                usuarioExistente.Id, usuarioExistente.Nome, usuarioExistente.Email);
+                userExistente.Id, userExistente.Nome, userExistente.Email);
 
-            return (true, "Usuário alterado com sucesso", usuarioExistente);
+            return (true, "Usuário alterado com sucesso", userExistente);
         }
 
         public (bool Sucesso, string Mensagem) Excluir(int id)
@@ -196,16 +196,16 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 return (false, "Id deve ser um número positivo");
 
             // Localizar usuário
-            var usuarioExistente = _usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuarioExistente == null)
+            var userExistente = _user.FirstOrDefault(u => u.Id == id);
+            if (userExistente == null)
             {
                 _logger.LogWarning("Erro ao excluir: Usuário com Id {Id} não encontrado", id);
                 return (false, "Usuário não encontrado");
             }
 
             // Remover usuário
-            _usuarios.Remove(usuarioExistente);
-            _logger.LogInformation("Usuário excluído com sucesso. Id: {Id}, Nome: {Nome}", id, usuarioExistente.Nome);
+            _user.Remove(userExistente);
+            _logger.LogInformation("Usuário excluído com sucesso. Id: {Id}, Nome: {Nome}", id, userExistente.Nome);
 
             return (true, "Usuário excluído com sucesso");
         }
