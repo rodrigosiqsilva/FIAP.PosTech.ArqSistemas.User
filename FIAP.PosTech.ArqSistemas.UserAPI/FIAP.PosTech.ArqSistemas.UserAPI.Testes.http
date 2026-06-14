@@ -34,8 +34,8 @@ Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 X-Correlation-Id: test-004
 {
-  "nome": "Rodrigo Siqueira Silva",
-  "email": "rodrigosiqueirasilva@hotmail.com",
+  "nome": "Rafaella Marcondes",
+  "email": "rafaella@example.com",
   "senha": "TesteSenha@123"
 }
 
