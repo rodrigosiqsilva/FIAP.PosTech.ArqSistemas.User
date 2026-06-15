@@ -131,7 +131,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Controllers
                 var response = ApiResponse<User>.SucessoCreate(userCriado, mensagem);
                 response.CorrelationId = GetCorrelationId();
 
-                var notificar = _userNotificationService.SendNotificationUser(userCriado, GetCorrelationId());
+                _userNotificationService.SendNotificationUser(userCriado, GetCorrelationId());
 
                 return CreatedAtAction(nameof(ObterPorId), new { id = userCriado.Id }, response);
             }
