@@ -18,7 +18,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
         public async Task SendNotificationUser(User user, string? correlationId)
         {
             string bootstrapServers = _configuration["KafkaConfig:BootstrapServers"];
-            string topicName = _configuration["KafkaConfig:TopicName"];
+            string topicName = _configuration["KafkaConfig:TopicNameUserCreated"];
 
             // Cria o evento
             var newEvent = new UserCreatedEvent(
