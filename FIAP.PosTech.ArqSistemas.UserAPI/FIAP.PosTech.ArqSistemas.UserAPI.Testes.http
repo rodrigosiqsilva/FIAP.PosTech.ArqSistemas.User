@@ -34,8 +34,8 @@ Authorization: Bearer {{login.response.body.$.token}}
 Content-Type: application/json
 X-Correlation-Id: test-004
 {
-  "nome": "Rafaella Marcondes",
-  "email": "rodrigosiqsilva123@gmail.com",
+  "nome": "Rodrigo Siqueira Silva",
+  "email": "rodrigosiqueirasilva@hotmail.com",
   "senha": "TesteSenha@123"
 }
 
@@ -57,7 +57,7 @@ X-Correlation-Id: test-005
 ###
 // 6. EXCLUIR USUÁRIO
 // Requisitos: Apenas Id necessário (na URL)
-DELETE {{HostAddress}}/api/user/6
+DELETE {{HostAddress}}/api/user/5
 Authorization: Bearer {{login.response.body.$.token}}
 X-Correlation-Id: test-006
 

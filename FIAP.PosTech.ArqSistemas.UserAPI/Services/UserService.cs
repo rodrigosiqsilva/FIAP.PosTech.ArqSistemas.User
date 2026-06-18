@@ -29,7 +29,7 @@ namespace FIAP.PosTech.ArqSistemas.UserAPI.Services
                 new User { Id = 2, Nome = "Maria Santos", Email = "maria@example.com", Senha = "OutraSenha#456" },
                 new User { Id = 3, Nome = "Pedro Oliveira", Email = "pedro@example.com", Senha = "MaisSenha!789" },
                 new User { Id = 4, Nome = "Ana Costa", Email = "ana@example.com", Senha = "Senha@Teste#101" },
-                new User { Id = 5, Nome = "Rodrigo Siqueira Silva", Email = "rodrigosiqueirasilva@hotmail.com", Senha = "RodrigoSenha$202" }
+                new User { Id = 5, Nome = "Bebeto", Email = "bebeto@hotmail.com", Senha = "RodrigoSenha$202" }
             });
 
             _logger.LogInformation("Dados iniciais de usuários carregados com sucesso. Total de registros: {TotalRegistros}", _user.Count);
