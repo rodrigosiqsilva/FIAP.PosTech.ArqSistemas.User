@@ -1,0 +1,59 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiap-user-api-deployment
+  labels:
+    app: fiap-user-api
+spec:
+  replicas: 2 # Define 2 instâncias do pod para garantir alta disponibilidade
+  selector:
+    matchLabels:
+      app: fiap-user-api
+  template:
+    metadata:
+      labels:
+        app: fiap-user-api
+    spec:
+      containers:
+      - name: fiap-user-api
+        image: rodrigosiqsilva/fiap-user-api:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 7070
+        - name: https
+          containerPort: 7071
+        resources:
+          # Configurações recomendadas para uma API de volume de dados moderado em .NET
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: DOTNET_ENVIRONMENT
+          value: "Production"
+        # O ASPNETCORE_URLS força o runtime do .NET a escutar nas portas corretas configuradas no cluster
+        - name: ASPNETCORE_URLS
+          value: "http://+:7070;https://+:7071"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fiap-user-api-service
+  labels:
+    app: fiap-user-api
+spec:
+  type: ClusterIP # Altere para LoadBalancer ou use um Ingress caso queira expor para a internet
+  selector:
+    app: fiap-user-api
+  ports:
+  - name: http
+    port: 7070
+    targetPort: 7070
+  - name: https
+    port: 7071
+    targetPort: 7071
