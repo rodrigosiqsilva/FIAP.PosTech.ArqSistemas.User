@@ -12,11 +12,11 @@ EXPOSE 7071
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["FIAP.PosTech.ArqSistemas.UserAPI/FIAP.PosTech.ArqSistemas.UserAPI.csproj", "FIAP.PosTech.ArqSistemas.UserAPI/"]
-RUN dotnet restore "./FIAP.PosTech.ArqSistemas.UserAPI/FIAP.PosTech.ArqSistemas.UserAPI.csproj"
+COPY ["FIAP.PosTech.ArqSistemas.User/FIAP.PosTech.ArqSistemas.UserAPI/FIAP.PosTech.ArqSistemas.UserAPI.csproj", "FIAP.PosTech.ArqSistemas.User/FIAP.PosTech.ArqSistemas.UserAPI/"]
+RUN dotnet restore "./FIAP.PosTech.ArqSistemas.User/FIAP.PosTech.ArqSistemas.UserAPI/FIAP.PosTech.ArqSistemas.UserAPI.csproj"
 COPY . .
-WORKDIR "/src/FIAP.PosTech.ArqSistemas.UserAPI"
-RUN dotnet build "./FIAP.PosTech.ArqSistemas.UserAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/FIAP.PosTech.ArqSistemas.User/FIAP.PosTech.ArqSistemas.UserAPI"
+RUN dotnet build "./FIAP.PosTech.ArqSistemas.UserAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build[cite: 7]
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
