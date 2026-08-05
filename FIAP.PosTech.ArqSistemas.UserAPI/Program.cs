@@ -105,14 +105,14 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FIAP Cloud Games (FCG) v1");
+    c.SwaggerEndpoint("./v1/swagger.json", "FIAP Cloud Games (FCG) v1");
     c.RoutePrefix = "swagger";
 });
 
 // Usar middleware de correlationId e tratamento de erros global
 app.UseCorrelationId();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
