@@ -4,6 +4,9 @@ using FIAP.PosTech.ArqSistemas.UserAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Prometheus;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,20 @@ builder.Services.AddControllers();
 // Register Usuario Service
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddScoped<IUserNotificationService, UserNotificationService>();
+
+// Configurar OpenTelemetry para Tracing
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracerProviderBuilder =>
+    {
+        tracerProviderBuilder
+            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("user-api"))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT") ?? "http://localhost:4317");
+            });
+    });
 
 // Configure OpenAPI/Swagger using Swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -101,6 +118,9 @@ var app = builder.Build();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
+// Habilitar métricas do Prometheus
+app.UseHttpMetrics();
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -117,6 +137,7 @@ app.UseCorrelationId();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapMetrics(); // Expõe métricas em /metrics
 
 // Log ao iniciar a aplicação
 logger.LogInformation("Iniciando aplicação FIAP Cloud Games (FCG)");
